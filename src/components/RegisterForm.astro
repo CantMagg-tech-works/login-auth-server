@@ -1,0 +1,368 @@
+<form
+  class="register-form space-content"
+  method="post"
+  action="http://localhost:9000/api/v1/auths/register"
+  onsubmit="return validateForm(event)"
+>
+  <div class="input-container">
+    <div class="input-wrapper">
+      <!-- Ícono de correo electrónico en SVG -->
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="icon"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="1.5"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M21.75 7.5l-9.75 6-9.75-6m19.5 0v9.75a1.5 1.5 0 01-1.5 1.5H3.75a1.5 1.5 0 01-1.5-1.5V7.5m19.5 0L12 13.5 3.75 7.5"
+        ></path>
+      </svg>
+      <input
+        type="email"
+        id="email"
+        name="email"
+        placeholder="Email Address"
+        required
+        oninput="validateEmail()"
+      />
+    </div>
+    <span id="email-error-message" style="color:red; display:none;"
+      >Formato de email inválido.</span
+    >
+  </div>
+
+  <div class="input-container">
+    <div class="input-wrapper">
+      <!-- Ícono de candado en SVG -->
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="icon"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M16.5 10.5V7.875a4.125 4.125 0 10-8.25 0V10.5M6 10.5h12a1.5 1.5 0 011.5 1.5v7.125a1.5 1.5 0 01-1.5 1.5H6a1.5 1.5 0 01-1.5-1.5V12a1.5 1.5 0 011.5-1.5z"
+        ></path>
+      </svg>
+      <input
+        type="password"
+        id="password"
+        name="password"
+        placeholder="Password"
+        required
+        oninput="checkPasswordStrength()"
+      />
+    </div>
+    <div id="password-strength" class="strength-bar"></div>
+    <small id="password-strength-text"></small>
+  </div>
+
+  <div class="input-container">
+    <div class="input-wrapper">
+      <!-- Ícono de candado para confirmar en SVG -->
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="icon"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M16.5 10.5V7.875a4.125 4.125 0 10-8.25 0V10.5M6 10.5h12a1.5 1.5 0 011.5 1.5v7.125a1.5 1.5 0 01-1.5 1.5H6a1.5 1.5 0 01-1.5-1.5V12a1.5 1.5 0 011.5-1.5z"
+        ></path>
+      </svg>
+      <input
+        type="password"
+        id="password2"
+        placeholder="Retype Password"
+        required
+        oninput="checkPasswordsMatch()"
+      />
+    </div>
+    <span
+      id="password-match-message"
+      style="color:red; min-height: 16px; display:none;"
+      >Las contraseñas no coinciden.</span
+    >
+  </div>
+
+  <div class="checkbox-container">
+    <label for="show-password">Mostrar contraseñas</label>
+    <input type="checkbox" id="show-password" onclick="togglePasswords()" />
+  </div>
+
+  <button class="button color-secondary behavior-full" type="submit"
+    >Register</button
+  >
+
+  <div class="form-links">
+    <a href="#">Términos & Privacidad</a>
+    <a href="#">Soporte CantMaag</a>
+  </div>
+</form>
+
+<script defer>
+  function validateEmail() {
+    var email = document.getElementById("email").value;
+    var emailError = document.getElementById("email-error-message");
+    var emailPattern = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/; // Expresión regular para validar email
+
+    // Si el campo está vacío, ocultar el mensaje
+    if (email === "") {
+      emailError.style.display = "none";
+    }
+    // Si el campo no está vacío pero no coincide con el patrón, mostrar error
+    else if (!emailPattern.test(email)) {
+      emailError.style.display = "block"; // Mostrar el mensaje de error
+    }
+    // Si el correo es válido, ocultar el mensaje de error
+    else {
+      emailError.style.display = "none"; // Ocultar el mensaje si el email es válido
+    }
+  }
+
+  // Validar el formulario antes de enviarlo
+  function validateForm(event) {
+    var email = document.getElementById("email").value;
+    var emailError = document.getElementById("email-error-message");
+    var emailPattern = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/; // Expresión regular para validar email
+
+    // Validar el formato del email
+    if (!emailPattern.test(email)) {
+      emailError.style.display = "block"; // Mostrar el mensaje de error si el email no es válido
+      event.preventDefault(); // Evitar que el formulario se envíe
+      return false;
+    } else {
+      emailError.style.display = "none"; // Ocultar el mensaje de error si el email es válido
+    }
+
+    // Validar las contraseñas al enviar
+    var password1 = document.getElementById("password").value;
+    var password2 = document.getElementById("password2").value;
+    var passwordMatchMessage = document.getElementById(
+      "password-match-message",
+    );
+
+    if (password1 !== password2) {
+      passwordMatchMessage.style.display = "block";
+      passwordMatchMessage.textContent = "Las contraseñas no coinciden.";
+      passwordMatchMessage.style.color = "red";
+      event.preventDefault(); // Detener el envío del formulario
+      return false;
+    } else {
+      passwordMatchMessage.style.display = "none";
+    }
+
+    return true; // Permitir el envío si todo es válido
+  }
+
+  // Mostrar/ocultar contraseñas
+  function togglePasswords() {
+    var passwordField1 = document.getElementById("password");
+    var passwordField2 = document.getElementById("password2");
+
+    if (passwordField1.type === "password") {
+      passwordField1.type = "text";
+      passwordField2.type = "text";
+    } else {
+      passwordField1.type = "password";
+      passwordField2.type = "password";
+    }
+  }
+
+  // Evaluar la fuerza de la contraseña
+  function checkPasswordStrength() {
+    var password = document.getElementById("password").value;
+    var strengthBar = document.getElementById("password-strength");
+    var strengthText = document.getElementById("password-strength-text");
+
+    // Si el campo de la contraseña está vacío, ocultar la barra y el texto
+    if (password === "") {
+      strengthBar.style.width = "0";
+      strengthBar.style.backgroundColor = "transparent";
+      strengthText.textContent = ""; // Eliminar el texto de fortaleza
+      return; // Salir de la función
+    }
+
+    var strength = 0;
+
+    if (password.length >= 8) strength++;
+    if (/[A-Z]/.test(password)) strength++;
+    if (/[a-z]/.test(password)) strength++;
+    if (/[0-9]/.test(password)) strength++;
+    if (/[\W]/.test(password)) strength++;
+
+    switch (strength) {
+      case 0:
+      case 1:
+        strengthBar.style.width = "20%";
+        strengthBar.style.backgroundColor = "red";
+        strengthText.textContent = "Muy débil";
+        break;
+      case 2:
+        strengthBar.style.width = "40%";
+        strengthBar.style.backgroundColor = "orange";
+        strengthText.textContent = "Débil";
+        break;
+      case 3:
+        strengthBar.style.width = "60%";
+        strengthBar.style.backgroundColor = "yellow";
+        strengthText.textContent = "Aceptable";
+        break;
+      case 4:
+        strengthBar.style.width = "80%";
+        strengthBar.style.backgroundColor = "lightgreen";
+        strengthText.textContent = "Buena";
+        break;
+      case 5:
+        strengthBar.style.width = "100%";
+        strengthBar.style.backgroundColor = "green";
+        strengthText.textContent = "Muy fuerte";
+        break;
+    }
+  }
+
+  // Verificar si las contraseñas coinciden en tiempo real
+  function checkPasswordsMatch() {
+    var password1 = document.getElementById("password").value;
+    var password2 = document.getElementById("password2").value;
+    var passwordMatchMessage = document.getElementById(
+      "password-match-message",
+    );
+
+    if (password2 === "") {
+      passwordMatchMessage.style.display = "none"; // Ocultar el mensaje
+      return; // Salir de la función
+    }
+
+    if (password1 !== password2) {
+      passwordMatchMessage.style.display = "block";
+      passwordMatchMessage.textContent = "Las contraseñas no coinciden.";
+      passwordMatchMessage.style.color = "red";
+    } else {
+      passwordMatchMessage.style.display = "block";
+      passwordMatchMessage.textContent = "Las contraseñas coinciden.";
+      passwordMatchMessage.style.color = "green";
+    }
+  }
+</script>
+
+<style lang="scss" is:global>
+  .input-container {
+    margin-bottom: 20px;
+  }
+
+  .input-wrapper {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 30px;
+    background-color: #f9f9f9;
+    padding: 0 15px;
+    width: 100%; /* Asegura que el wrapper ocupe el 100% del ancho disponible */
+    height: 45px; /* Ajuste fijo de la altura del contenedor */
+    box-sizing: border-box; /* Garantiza que el padding no afecte el tamaño */
+    overflow: hidden; /* Evita que cualquier contenido sobresalga */
+  }
+
+  .input-wrapper:focus-within {
+    border-color: #4caf50; /* Cambiar el color del borde del wrapper a verde cuando el input tiene el foco */
+  }
+
+  .input-wrapper svg.icon {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    margin-right: 10px;
+    stroke: #aaa;
+  }
+
+  .input-wrapper input {
+    width: 100%;
+    padding: 0; /* Elimina cualquier padding interno que pueda causar sobresalientes */
+    margin: 0;
+    font-size: 16px;
+    height: 100%; /* Asegura que el input ocupe toda la altura del contenedor */
+    border: none;
+    background-color: transparent;
+    outline: none;
+    box-sizing: border-box;
+  }
+
+  .input-wrapper input::placeholder {
+    color: #aaa;
+    opacity: 1;
+  }
+
+  .input-wrapper input:focus {
+    outline: none;
+    border-color: #4caf50 !important;
+  }
+
+  /* Barra de fuerza de contraseña */
+  .strength-bar {
+    height: 5px;
+    width: 100%;
+    background-color: transparent;
+    margin-top: 5px;
+    border-radius: 3px;
+  }
+
+  small {
+    display: block;
+    margin-top: 5px;
+    color: #333;
+  }
+
+  .checkbox-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    margin-top: 15px;
+    margin-bottom: 20px;
+  }
+
+  .button {
+    width: 100%;
+    padding: 15px;
+    font-size: 18px;
+    background-color: #4caf50;
+    border: none;
+    border-radius: 30px;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+
+  .button:hover {
+    background-color: #45a049;
+  }
+
+  .form-links {
+    margin-top: 15px;
+    text-align: center;
+  }
+
+  .form-links a {
+    display: block;
+    font-size: 14px;
+    color: #777;
+  }
+
+  .form-links a:hover {
+    color: #4caf50;
+    text-decoration: underline;
+  }
+</style>

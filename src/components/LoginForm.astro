@@ -1,79 +1,227 @@
----
-import { Notification } from 'accessible-astro-components'
-import { Icon } from 'astro-icon'
----
+<form
+  class="register-form space-content"
+  method="post"
+  action="http://localhost:9000/login"
+  onsubmit="return validateForm(event)"
+>
+  <div class="input-container">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="icon"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      stroke-width="1.5"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="M21.75 7.5l-9.75 6-9.75-6m19.5 0v9.75a1.5 1.5 0 01-1.5 1.5H3.75a1.5 1.5 0 01-1.5-1.5V7.5m19.5 0L12 13.5 3.75 7.5"
+      ></path>
+    </svg>
+    <input
+      type="text"
+      id="username"
+      name="username"
+      placeholder="Email Address"
+      required
+    />
+    <span id="email-error-message" style="color:red; display:none;"
+      >Formato de email inválido.</span
+    >
+  </div>
 
-<form class="login-form space-content" method="post">
-  <Notification type="warning">
-    <Icon pack="majesticons" name="emoji-sad-line" /><p class="size-12">Incorrect email and password combination. Please try again.</p>
-  </Notification>
-  <div class="login-form__controls">
-    <label for="email">Email</label>
-    <input type="email" name="email" required>
+  <div class="input-container">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="icon"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      stroke-width="1.5"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="M16.5 10.5V7.875a4.125 4.125 0 10-8.25 0V10.5M6 10.5h12a1.5 1.5 0 011.5 1.5v7.125a1.5 1.5 0 01-1.5 1.5H6a1.5 1.5 0 01-1.5-1.5V12a1.5 1.5 0 011.5-1.5z"
+      ></path>
+    </svg>
+    <input
+      type="password"
+      id="password"
+      name="password"
+      placeholder="Password"
+    />
   </div>
-  <div class="login-form__controls">
-    <label for="password">Password</label>
-    <input type="password" name="password" required>
+
+  <div id="login-error-message" style="color:red; display:none;">
+    Contraseña o email incorrectos.
   </div>
-  <button class="button color-secondary behavior-full" type="submit">Login</button>
-  <label class="checkbox">
-    <input type="checkbox" name="remember">
-    <span>Remember me</span>
-  </label>
-  <a href="#">Forgot password?</a>
-</form> 
+
+  <div class="checkbox-container">
+    <div class="checkbox-item">
+      <label for="show-password">Mostrar contraseñas</label>
+      <input type="checkbox" id="show-password" />
+    </div>
+  </div>
+
+  <button class="button color-secondary behavior-full" type="submit"
+    >Login</button
+  >
+
+  <div class="form-links">
+    <a href="/register">Crear Cuenta</a>
+    <a href="#">Soporte CantMaag</a>
+  </div>
+</form>
 
 <script>
-  // variables
-  const form = document.querySelector('.login-form')
-  const notification = form.querySelector('.notification')
-  const emailInput = form.querySelector('input[name="email"]')
-  const passwordInput = form.querySelector('input[name="password"]')
-  const submitButton = form.querySelector('button')
-
-  // execution
-  notification.style.display = 'none'
-
-  submitButton.addEventListener('click', event => {
-    event.preventDefault()
-
-    if (emailInput.value === 'admin@astro.demo' && passwordInput.value === 'Astronaut570') {
-      localStorage.setItem('isLoggedIn', 'true')
-      window.location.href = '/'
-    } else {
-      notification.style.display = 'flex'
+  document.addEventListener("DOMContentLoaded", function () {
+    function getElementByIdSafe<T extends HTMLElement>(id: string): T | null {
+      const element = document.getElementById(id) as T | null;
+      if (!element) {
+        console.error(`El elemento con id "${id}" no se encontró en el DOM.`);
+      }
+      return element;
     }
-  })
+
+    function validateEmail() {
+      const emailField = getElementByIdSafe<HTMLInputElement>("username");
+      const emailErrorMessage = getElementByIdSafe<HTMLSpanElement>(
+        "email-error-message",
+      );
+
+      if (!emailField || !emailErrorMessage) {
+        return false;
+      }
+
+      const emailPattern = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+
+      if (!emailPattern.test(emailField.value)) {
+        emailErrorMessage.textContent = "Formato de email inválido.";
+        emailErrorMessage.style.display = "block";
+        return false;
+      }
+
+      emailErrorMessage.style.display = "none";
+      return true;
+    }
+
+    const showPasswordCheckbox =
+      getElementByIdSafe<HTMLInputElement>("show-password");
+    const passwordField = getElementByIdSafe<HTMLInputElement>("password");
+
+    if (showPasswordCheckbox && passwordField) {
+      showPasswordCheckbox.addEventListener("click", function () {
+        passwordField.type =
+          passwordField.type === "password" ? "text" : "password";
+      });
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("error") === "true") {
+      const loginErrorMessage = getElementByIdSafe<HTMLDivElement>(
+        "login-error-message",
+      );
+      if (loginErrorMessage) {
+        loginErrorMessage.textContent = "Contraseña o email incorrectos.";
+        loginErrorMessage.style.display = "block";
+      }
+
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  });
 </script>
 
 <style lang="scss" is:global>
-  @use '../assets/scss/base/border' as *;
-  @use '../assets/scss/base/space' as *;
+  .input-container {
+    position: relative;
+    margin-bottom: 15px;
+  }
 
-  .login-form {
-    label {
-      display: block;
-      margin-bottom: $space-8;
-    }
+  .input-container svg.icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    stroke: #aaa;
+  }
 
-    input {
-      width: 100%;
-      @include radius-small;
-    }
+  .input-container input {
+    width: 100%;
+    padding: 12px 15px 12px 40px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 30px;
+    background-color: #f9f9f9;
+    transition: border-color 0.3s;
+  }
 
-    input {
-      padding: $space-8;
-      border: 2px solid var(--neutral-600);
-    }
+  .input-container input::placeholder {
+    color: #aaa;
+  }
 
-    .checkbox {
-      display: flex;
-      align-items: center;
-      gap: $space-4;
+  .input-container input:focus {
+    outline: none;
+    border-color: #4caf50;
+  }
 
-      input {
-        width: auto;
-      }
-    }
+  .button {
+    width: 100%;
+    padding: 15px;
+    font-size: 18px;
+    background-color: #4caf50;
+    border: none;
+    border-radius: 30px;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+
+  .button:hover {
+    background-color: #45a049;
+  }
+
+  .checkbox-container {
+    display: flex;
+    flex-direction: column;
+    margin-top: 15px;
+  }
+
+  .checkbox-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    width: 100%;
+  }
+
+  .checkbox-item label {
+    font-size: 14px;
+    color: #333;
+  }
+
+  .checkbox-item input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+  }
+
+  .form-links {
+    margin-top: 20px;
+    text-align: center;
+  }
+
+  .form-links a {
+    font-size: 14px;
+    color: #4caf50;
+    text-decoration: none;
+    display: block;
+    margin-top: 10px;
+  }
+
+  .form-links a:hover {
+    text-decoration: underline;
   }
 </style>
