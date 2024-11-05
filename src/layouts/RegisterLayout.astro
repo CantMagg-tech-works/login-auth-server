@@ -2,7 +2,7 @@
 import '../assets/scss/globals.scss'
 
 const {title} = Astro.props
-let subtitle = 'Accessible Astro Dashboard'
+let subtitle = 'Resgister'
 ---
 
 <html lang="en" dir="ltr">
@@ -11,15 +11,18 @@ let subtitle = 'Accessible Astro Dashboard'
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;800&display=swap" rel="stylesheet">
 
+    <meta property="og:title" content="Accessible Astro Dashboard">
+    <meta property="og:description" content="An Accessible Dashboard Theme for Astro including a login page, a dashboard page and several other pages and components.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://dashboard.accessible-astro.dev">
+    <meta property="og:image" content="/social-preview-image.png">
 
-    
- 
     <title>{title} - {subtitle}</title>
   </head>
   <body>

@@ -1,6 +1,7 @@
 ---
-import LoginLayout from "../layouts/LoginLayout.astro";
-import LoginForm from "../components/LoginForm.astro";
+import LoginLayout from '../layouts/LoginLayout.astro'
+import RegisterForm from '../components/RegisterForm.astro'
+
 ---
 
 <LoginLayout title="Login">
@@ -55,7 +56,6 @@ import LoginForm from "../components/LoginForm.astro";
               </g>
             </svg>
           </div>
-
           <div class="brand__text">
             <span>Astro Dashboard</span>
             <span>An Accessible Astro Theme</span>
@@ -63,23 +63,23 @@ import LoginForm from "../components/LoginForm.astro";
         </div>
         <div class="inner__form space-content">
           <div class="space-content">
-            <h1>Login</h1>
-            <LoginForm />
+            <h1>Register</h1>
+            <RegisterForm />
           </div>
         </div>
         <div class="login__footer text-neutral-700">
           <p><em>Build fast dashboards, faster.</em></p>
         </div>
       </div>
-      <div class="login__background h-screen"></div>
+      <div class="login__background h-screen" />
     </div>
   </section>
 </LoginLayout>
 
 <style lang="scss">
-  @use "../assets/scss/base/breakpoint" as *;
-  @use "../assets/scss/base/size" as *;
-  @use "../assets/scss/base/space" as *;
+  @use '../assets/scss/base/breakpoint' as *;
+  @use '../assets/scss/base/size' as *;
+  @use '../assets/scss/base/space' as *;
 
   .login {
     display: grid;
@@ -95,7 +95,7 @@ import LoginForm from "../components/LoginForm.astro";
       gap: $space-48;
       padding: $space-24;
       z-index: 1;
-
+      
       @include breakpoint(medium) {
         padding: $space-48 $space-96;
         box-shadow: 0 0 40px rgba(0, 0, 0, 0.15);
@@ -138,7 +138,6 @@ import LoginForm from "../components/LoginForm.astro";
       @include breakpoint(medium) {
         display: block;
       }
-      
     }
 
     .reveal {
